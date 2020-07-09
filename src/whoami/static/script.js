@@ -32,7 +32,7 @@ let getGameInfo = (id, cb) => {
     });
 };
 
-const host = ":8081";
+const host = "";
 
 function addUsersRow(tableID, name, charAssigned, userHost, started, wonStatus, userid) {
     const tableRef = document.getElementById(tableID);
