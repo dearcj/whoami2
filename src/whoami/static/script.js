@@ -32,7 +32,7 @@ let getGameInfo = (id, cb) => {
     });
 };
 
-const host = "http://localhost:8080";
+const host = ":8081";
 
 function addUsersRow(tableID, name, charAssigned, userHost, started, wonStatus, userid) {
     const tableRef = document.getElementById(tableID);
@@ -141,7 +141,7 @@ let updateUserScreen = (data) => {
 
 window.onload = (e) => {
     $.ajax({
-        url: host + '/login',
+        url: '/login',
         contentType: 'application/json; charset=utf-8',
         xhrFields: {withCredentials: true},
         type: 'post',
