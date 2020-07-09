@@ -1,0 +1,179 @@
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 16px
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Roboto', sans-serif;
+    color: #2c3e50
+}
+
+h1 {
+    text-align: center
+}
+
+.title {
+    font-size: 48px;
+    margin-bottom: 1em
+}
+
+.main, .host-lobby, .player-lobby, .host-game, .player-game {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    max-width: 450px;
+    margin: auto;
+
+}
+
+.select-game {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 8px;
+    cursor: pointer;
+    -webkit-transition: .3s linear;
+    transition: .3s linear
+}
+
+.select-game:hover, .select-game:focus, .select-game:active {
+    background: #a6e3ff
+}
+
+.game-list input {
+    display: none
+}
+
+.game-list input:checked + label {
+    background: #a6e3ff
+}
+
+.host-lobby, .player-lobby, .host-game, .player-game {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    max-width: 400px
+}
+
+.input-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between
+}
+
+input {
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #ccc;
+    width: 196px;
+    height: 32px;
+    padding: 4px 16px;
+    margin-bottom: 24px
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse
+}
+
+td, th {
+    height: 36px
+
+}
+
+.users-table {
+    width: 400px;
+    text-align: center;
+    margin-bottom: 24px
+}
+
+.users-table th {
+    width: 200px;
+    background: #a6e3ff
+}
+
+.user {
+    position: relative
+}
+
+.userhost::before {
+    content: '★';
+}
+
+.user::before {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    left: 0;
+    top: 6px
+}
+
+.join, .create {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    max-width: 200px
+}
+
+.mrgn {
+    margin-bottom: 24px
+}
+
+.btn {
+    -ms-flex-item-align: center;
+    align-self: center;
+    cursor: pointer;
+    width: 120px;
+    height: 32px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: #039be5;
+    color: #ffffff;
+    -webkit-transition: .3s linear;
+    transition: .3s linear
+}
+
+.btn:hover, .btn:focus, .btn:active {
+    background: #006db3
+}
+
+.btn-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+    justify-content: space-around
+}
+
+.btn-win {
+    margin: 0
+}
+
+.btn-custom {
+    -ms-flex-item-align: end;
+    align-self: flex-end;
+    width: 200px
+}
+
+.host-lobby, .player-lobby, .host-game, .player-game {
+    display: none
+}

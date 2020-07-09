@@ -71,7 +71,7 @@ func getSettings() *Settings {
 	Settings := Settings{
 		M: sync.RWMutex{},
 	}
-	jsonFile, err := os.Open("static/files/games.json")
+	jsonFile, err := os.Open(path.Join(dir, "files", "games.json"))
 	if err == nil {
 		byteValue, _ := ioutil.ReadAll(jsonFile)
 		json.Unmarshal(byteValue, &Settings)
@@ -84,7 +84,7 @@ func getSettings() *Settings {
 func saveSettings(s *Settings) error {
 	b, _ := json.Marshal(s)
 
-	err := ioutil.WriteFile(path.Join(dir, "static", "files", "games.json"), b, 0)
+	err := ioutil.WriteFile(path.Join(dir, "files", "games.json"), b, 0)
 	if err != nil {
 		return err
 	} else {
@@ -147,7 +147,7 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 func hashAndSalt(pwd string) string {
-	bytes, _ := bcrypt.GenerateFromPassword([]byte(pwd), 14)
+	bytes, _ := bcrypt.GenerateFromPassword([]byte(pwd), 5)
 	return string(bytes)
 }
 
@@ -247,10 +247,13 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 	}
 	s.Games = append(s.Games, newgame)
 
-	err := saveSettings(s)
-	if err != nil {
-		log.Print(err)
-	}
+	go func() {
+		err := saveSettings(s)
+		if err != nil {
+			log.Print(err)
+		}
+	}()
+
 	ba, _ := json.Marshal(newgame)
 	w.WriteHeader(http.StatusOK)
 	w.Write(ba)
@@ -434,16 +437,16 @@ func hostStartGame(w http.ResponseWriter, r *http.Request) {
 
 	g := s.findGame(game_id)
 	if g == nil {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("no such game"))
 
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if g.Started {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("game already started"))
 
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -466,22 +469,22 @@ func hostStartGame(w http.ResponseWriter, r *http.Request) {
 	var GameUsersMinusHost []*GameUser
 
 	for _, u := range g.GameUsers {
-		if !u.Host {
-			GameUsersMinusHost = append(GameUsersMinusHost, u)
-		}
+		//if !u.Host {
+		GameUsersMinusHost = append(GameUsersMinusHost, u)
+		//}
 	}
 
 	allSet := true
 	for _, gu := range GameUsersMinusHost {
-		if gu.Host == false && (gu.CharacterAdded == "" || gu.Name == "") {
+		if gu.CharacterAdded == "" || gu.Name == "" {
 			allSet = false
 		}
 	}
 	s.M.RUnlock()
 
 	if allSet == false {
-		w.Write([]byte("not all users set their names"))
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("not all users set their names"))
 		return
 	}
 
@@ -528,11 +531,7 @@ var s *Settings
 
 func main() {
 
-	port := os.Getenv("PORT")
-
-	if port == "" {
-		log.Fatal("$PORT must be set")
-	}
+	port := "8081"
 
 	println("Starting server at host", ":"+port)
 

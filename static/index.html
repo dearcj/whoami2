@@ -1,28 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main.min.css">
+  <title>WhoAmI</title>
 </head>
 <body>
-<script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
-<header >
+  <h1 class="title">WhoAmI</h1>
+  <div class="main">
+    <div class="join">
+      <button id="join-game" class="btn mrgn" type="submit">Join / View</button>
+      <label style="color:red; display: none" id="error-pass" type="submit">Wrong password</label>
+      <label style="color:red; display: none" id="select-game" type="submit">First select game</label>
+      <input class="join__password" type="password" placeholder="Password" name="passwordJoin" required>
+      <table id="js-table" border="1" class="game-list" style="min-width: 200px">
+        <tr>
+        </tr>
+      </table>
+    </div>
+    <div class="create">
+      <button id="create-game" class="btn mrgn" type="submit">Create</button>
+      <input type="text" class="create__name" placeholder="Name" name="name" required>
+      <input type="password" class="create__password" placeholder="Password" name="password" required>
+    </div>
+  </div>
 
 
-</header>
+  <div class="player-lobby">
+    <div class="input-wrapper">
+      <input type="text" class="player-name" placeholder="Name" name="playerName" required>
+      <input type="text" class="player-character" placeholder="Character" name="playerCharacter" required>
+    </div>
+    <div class="btn-wrapper ">
+      <div>
+        <button id="start-game" class="btn mrgn" type="submit">Start Game</button>
+      </div>
+      <button id="submit_character" class="btn mrgn" type="submit">Submit</button>
+    </div>
+    <div style="text-align: center;">
+      <label style="color:red; text-align: center; display: none; " id="error-start" type="submit">All users should submit</label>
+    </div>
+    <div class="users-table">
+      <table id="js-player-lobby" border="1" class="game-list">
+        <tr>
+          <th>Name</th>
+          <th>Character</th>
+          <th class="wincolumn">Win</th>
+        </tr>
+      </table>
+    </div>
+    <button id="finish" class="btn">Finish</button>
+  </div>
 
-<button id="login">Set cookie session via login</button>→
-<button id="list-games">Get games</button>→
-<button id="create-game">Create game</button>→
-<button id="game-info">Get 1st game info</button>→
-<button id="join-game">Join game</button>→
-<button id="submit_character">Set name / character</button>→
-<button id="start-game">Start game (give players badges)</button>→
-<button id="set-win">(Host only, for started games) set win</button>
+  <div class="host-game">
+    <div class="users-table">
+      <table id="host-winner-list" border="1" class="game-list">
+        <tr>
+          <th>Name</th>
+          <th>Character</th>
+          <th id="win-column">Win</th>
+        </tr>
+      </table>
+    </div>
+    <button id="finish" class="btn">Finish</button>
+  </div>
 
-<script src="index.js"></script>
+  <div class="player-game">
+    <div class="users-table">
+      <table id="player-winner-list" border="1" class="game-list">
+        <tr>
+          <th>Name</th>
+          <th>Character</th>
+          <th>Win</th>
+        </tr>
+      </table>
+    </div>
+  </div>
 
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
