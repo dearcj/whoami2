@@ -118,8 +118,7 @@ let redrawUsers = (game) => {
             console.log("NO MY ID");
         }
 
-        if (window.isHost || e.Id == window.MyId)
-            charAssigned = e.CharacterAdded;
+
 
         if (game.Started) {
             if (( e.Won || e.Id != window.MyId))
@@ -127,6 +126,9 @@ let redrawUsers = (game) => {
                 charAssigned = "*****";
             }
 
+        } else {
+            if (e.Id == window.MyId)
+                charAssigned = e.CharacterAdded;
         }
 
         addUsersRow('js-player-lobby', name, charAssigned, e.Host, game.Started, e.Won, e.Id);
