@@ -122,7 +122,7 @@ let redrawUsers = (game) => {
             charAssigned = e.CharacterAdded;
 
         if (game.Started) {
-            if ((window.isHost || e.Won || e.Id != window.MyId))
+            if (( e.Won || e.Id != window.MyId))
             charAssigned = e.CharacterAssigned; else {
                 charAssigned = "*****";
             }
