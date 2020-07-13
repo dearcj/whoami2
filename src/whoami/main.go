@@ -44,6 +44,18 @@ type Settings struct {
 	M     sync.RWMutex `json:"-"`
 }
 
+func (s *Settings) RemoveGame(gameId string) {
+	s.M.Lock()
+	defer s.M.Unlock()
+
+	for inx, g := range s.Games {
+		if g.Id == gameId {
+			s.Games = append(s.Games[:inx], s.Games[inx+1:]...)
+		}
+	}
+
+}
+
 func (s *Settings) findGame(gameId string) *Game {
 	s.M.RLock()
 	defer s.M.RUnlock()
@@ -265,9 +277,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 	userid := getUUID(r)
 	//var res string
 	if userid == "" {
-		uniqueId := uuid.Must(uuid.NewV4()).String()
+		userid = uuid.Must(uuid.NewV4()).String()
 		//	res = "session set"
-		setSession(uniqueId, w)
+		setSession(userid, w)
 	} else {
 		//	res = "already have id"
 	}
@@ -424,6 +436,28 @@ func roll(users []*GameUser, allNames []string) {
 	}
 }
 
+func finishGame(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	userid := getUUID(r)
+	game_id := getGameId(r)
+	g := s.findGame(game_id)
+	u := g.findUser(userid)
+	if g != nil && u != nil {
+		if u.Host {
+			s.RemoveGame(game_id)
+		}
+
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func hostStartGame(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
@@ -544,6 +578,7 @@ func main() {
 	http.HandleFunc("/submit_character", submitCharacter)
 	http.HandleFunc("/host_start_game", hostStartGame)
 	http.HandleFunc("/set_win", setWin)
+	http.HandleFunc("/finish_game", finishGame)
 
 	http.HandleFunc("/list_games", listGames)
 	http.HandleFunc("/game_info", gameInfo)

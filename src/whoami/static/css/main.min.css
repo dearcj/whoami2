@@ -11,6 +11,11 @@ body {
     color: #2c3e50
 }
 
+.my-row {
+    background-color: lightgoldenrodyellow;
+    font-weight: bold;
+}
+
 h1 {
     text-align: center
 }

@@ -38,6 +38,8 @@ function addUsersRow(tableID, name, charAssigned, userHost, started, wonStatus, 
     const tableRef = document.getElementById(tableID);
     const dataRow = tableRef.insertRow(1);
     $(dataRow).addClass("users-row");
+    if (userid == window.MyId)
+        $(dataRow).addClass("my-row");
     const nameCell = dataRow.insertCell(0);
     const characterCell = dataRow.insertCell(1);
     nameCell.innerHTML = name;
@@ -78,13 +80,16 @@ let globalUpdate = () => {
 
 let redrawUsers = (game) => {
     if (game.Started) {
-
-        $("#finish").show();
+        if (window.isHost) {
+            $("#finish").show();
+        }
+        $("#menu").show();
         $(".player-name").hide();
         $(".player-character").hide();
         $("#start-game").hide();
         $("#submit_character").hide();
     } else {
+        $("#menu").hide();
         $("#finish").hide();
         $(".player-name").show();
         $(".player-character").show();
@@ -109,11 +114,15 @@ let redrawUsers = (game) => {
     game.GameUsers.forEach(e => {
         let name = e.Name;
         let charAssigned = "*****";
+        if (window.MyId == "") {
+            console.log("NO MY ID");
+        }
+
         if (window.isHost || e.Id == window.MyId)
             charAssigned = e.CharacterAdded;
 
         if (game.Started) {
-            if ((window.isHost || e.Won ))
+            if ((window.isHost || e.Won || e.Id != window.MyId))
             charAssigned = e.CharacterAssigned; else {
                 charAssigned = "*****";
             }
@@ -149,6 +158,7 @@ window.onload = (e) => {
         headers: {},
         success: function (data) {
             window.MyId = data;
+            console.log("MyId is set to", data)
         },
         error: function (data) {
         },
@@ -406,7 +416,29 @@ let setWinFor = (id) => {
 
 }
 
+document.getElementById('menu').addEventListener('click', () => {
+    window.open('./', target = '_self')
+});
+
 
 document.getElementById('finish').addEventListener('click', () => {
+    $.ajax({
+        url: host + '/finish_game',
+        contentType: 'application/json; charset=utf-8',
+        xhrFields: {withCredentials: true},
+        type: 'post',
+        headers: {
+            game_id: window.CurrentGame.Id,
+        },
+        data: {},
+        success: function (data) {
+            console.info(data);
+            globalUpdate()
+        },
+        error: function (data) {
+            console.info(data);
+        },
+    });
+
     window.open('./', target = '_self')
 });
