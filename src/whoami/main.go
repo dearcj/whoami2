@@ -153,6 +153,15 @@ func setSession(uuid string, response http.ResponseWriter) {
 			Path:  "/",
 		}
 		http.SetCookie(response, cookie)
+
+		cookie = &http.Cookie{
+			Name:     "session",
+			Value:    encoded,
+			Path:     "/",
+			Domain:   "localhost",
+			SameSite: 2,
+		}
+		http.SetCookie(response, cookie)
 	}
 }
 

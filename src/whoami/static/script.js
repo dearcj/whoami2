@@ -152,7 +152,7 @@ let updateUserScreen = (data) => {
 
 window.onload = (e) => {
     $.ajax({
-        url: '/login',
+        url: host + '/login',
         contentType: 'application/json; charset=utf-8',
         xhrFields: {withCredentials: true},
         type: 'post',
