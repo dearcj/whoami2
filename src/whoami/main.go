@@ -126,16 +126,18 @@ var cookieHandler = securecookie.New(
 	[]byte("asdasdasdasdasd22131231231dasdas"),
 	[]byte("asda123123asdasddasdasd0294jd88d"))
 
-func getUUID(request *http.Request) (uuid string) {
+func getUUID(request *http.Request) (string, error) {
+	var UUID string
 	if cookie, err := request.Cookie("session"); err == nil {
 		cookieValue := make(map[string]string)
 		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
-			uuid = cookieValue["id"]
+			UUID = cookieValue["id"]
 		} else {
-			log.Fatal(err)
+			println(err)
+			return "", err
 		}
 	}
-	return
+	return UUID, nil
 }
 
 func setSession(uuid string, response http.ResponseWriter) {
@@ -179,7 +181,13 @@ func joinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	game_id := getGameId(r)
 
 	pass := r.Header.Get("pass")
@@ -216,7 +224,7 @@ func joinGame(w http.ResponseWriter, r *http.Request) {
 		game.GameUsers = append(game.GameUsers, &GameUser{Id: userid})
 	}
 
-	err := saveSettings(s)
+	err = saveSettings(s)
 	if err != nil {
 		log.Print(err)
 	}
@@ -237,7 +245,13 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 	pass := r.Header.Get("pass")
 	game_name := r.Header.Get("name")
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	if userid == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("No userid"))
@@ -274,7 +288,13 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 func login(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	//var res string
 	if userid == "" {
 		userid = uuid.Must(uuid.NewV4()).String()
@@ -295,7 +315,13 @@ func submitCharacter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	game_id := getGameId(r)
 
 	g := s.findGame(game_id)
@@ -331,7 +357,13 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	game_id := getGameId(r)
 	userToSet := r.Header.Get("user")
 
@@ -358,7 +390,7 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 	s.M.Unlock()
 
 	w.WriteHeader(http.StatusOK)
-	err := saveSettings(s)
+	err = saveSettings(s)
 	if err != nil {
 		log.Print(err)
 	}
@@ -372,7 +404,13 @@ func listGames(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	games := struct {
 		ToJoin       []Game
 		GamesYoureIn []Game
@@ -402,7 +440,12 @@ func gameInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	game_id := getGameId(r)
 	g := s.findGame(game_id)
@@ -444,7 +487,13 @@ func finishGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	game_id := getGameId(r)
 	g := s.findGame(game_id)
 	u := g.findUser(userid)
@@ -466,7 +515,13 @@ func hostStartGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userid := getUUID(r)
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	game_id := getGameId(r)
 
 	g := s.findGame(game_id)
@@ -546,7 +601,7 @@ func hostStartGame(w http.ResponseWriter, r *http.Request) {
 
 	g.Started = true
 	w.WriteHeader(http.StatusOK)
-	err := saveSettings(s)
+	err = saveSettings(s)
 	if err != nil {
 		log.Print(err)
 	}

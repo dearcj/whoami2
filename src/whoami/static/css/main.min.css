@@ -4,6 +4,73 @@
     font-size: 16px
 }
 
+
+/* button main_hover */
+.btn-main-hover {
+    position: absolute;
+    width: 200px;
+    height: 45px;
+    left: 610px;
+    top: 111px;
+}
+
+
+.subtract {
+    position: absolute;
+    width: 8px;
+    height: 45px;
+    left: 0px;
+    top: calc(50% - 45px/2);
+
+    background: #432F2F;
+}
+
+
+/* Rectangle 12 */
+.rectangle12 {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 0px;
+    bottom: 0px;
+
+    background: #432F2F;
+}
+
+.subtract2 {
+    position: absolute;
+    width: 8px;
+    height: 45px;
+    right: -8px;
+    top: calc(50% - 45px/2);
+
+    background: #432F2F;
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+
+.btn-text {
+    /* Submit */
+
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+
+    color: #FFF8F3;
+}
+
+
+
+
+
+
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
