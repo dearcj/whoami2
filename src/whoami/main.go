@@ -288,12 +288,7 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 func login(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
-	userid, err := getUUID(r)
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	userid, _ := getUUID(r)
 
 	//var res string
 	if userid == "" {
