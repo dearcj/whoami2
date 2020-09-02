@@ -5,6 +5,7 @@ import (
 	"github.com/gofrs/uuid"
 	"math/rand"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
@@ -62,10 +63,11 @@ func (s *Settings) findGame(gameId string) *Game {
 	defer s.M.RUnlock()
 
 	for _, g := range s.Games {
-		if g.Id == gameId {
+		if g.Id == gameId || g.LinkToken == gameId {
 			return g
 		}
 	}
+
 	return nil
 }
 
@@ -279,12 +281,14 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 		game_name = "Game" + strconv.Itoa(len(s.Games)+1)
 	}
 
+	linktoken := strings.ReplaceAll(gameId.String(), "-", "")
+
 	newgame := &Game{
 		PublicName: game_name,
 		Id:         gameId.String(),
 		GameUsers:  users,
 		PassHash:   hashAndSalt(pass),
-		//LinkToken:  hashAndSalt(gameId),
+		LinkToken:  linktoken,
 	}
 	s.Games = append(s.Games, newgame)
 
