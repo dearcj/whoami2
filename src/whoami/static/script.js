@@ -32,8 +32,8 @@ let getGameInfo = (id, cb) => {
     });
 };
 
-const host = "";
-//const host = "http://ec2-3-83-130-30.compute-1.amazonaws.com:8081";
+//const host = "";
+const host = "http://ec2-3-83-130-30.compute-1.amazonaws.com:8081";
 
 function addUsersRow(tableID, name, charAssigned, userHost, started, wonStatus, userid) {
     const tableRef = document.getElementById(tableID);
