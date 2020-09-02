@@ -114,7 +114,7 @@ func addCorsHeader(res http.ResponseWriter) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
 
 	//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
@@ -160,10 +160,10 @@ func setSession(uuid string, response http.ResponseWriter) {
 
 	if encoded, err := cookieHandler.Encode("session", value); err == nil {
 		cookie := &http.Cookie{
-			Name:     "session",
-			Value:    encoded,
-			Path:     "/",
-			SameSite: 2,
+			Name:  "session",
+			Value: encoded,
+			Path:  "/",
+			//	SameSite: 2,
 		}
 		http.SetCookie(response, cookie)
 	}
