@@ -31,6 +31,7 @@ type Game struct {
 	PublicName string
 	Id         string
 	GameUsers  []*GameUser
+	LinkToken  string
 }
 
 type User struct {
@@ -159,9 +160,10 @@ func setSession(uuid string, response http.ResponseWriter) {
 
 	if encoded, err := cookieHandler.Encode("session", value); err == nil {
 		cookie := &http.Cookie{
-			Name:  "session",
-			Value: encoded,
-			Path:  "/",
+			Name:     "session",
+			Value:    encoded,
+			Path:     "/",
+			SameSite: 2,
 		}
 		http.SetCookie(response, cookie)
 
@@ -169,7 +171,6 @@ func setSession(uuid string, response http.ResponseWriter) {
 			Name:     "session",
 			Value:    encoded,
 			Path:     "/",
-			Domain:   "localhost",
 			SameSite: 2,
 		}
 		http.SetCookie(response, cookie)
@@ -291,6 +292,7 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 		Id:         gameId.String(),
 		GameUsers:  users,
 		PassHash:   hashAndSalt(pass),
+		//LinkToken:  hashAndSalt(gameId),
 	}
 	s.Games = append(s.Games, newgame)
 
