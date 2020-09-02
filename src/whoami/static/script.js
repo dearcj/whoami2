@@ -158,7 +158,8 @@ window.onload = (e) => {
         xhrFields: {withCredentials: true},
         type: 'post',
         data: {},
-        headers: {},
+        headers: {
+        },
         success: function (data) {
             window.MyId = data;
             console.log("MyId is set to", data)
@@ -173,6 +174,9 @@ window.onload = (e) => {
         xhrFields: {withCredentials: true},
         dataType: "json",
         type: 'post',
+        headers: {
+            "id_fix": "asdasdasdasdasdasd",
+        },
         data: {},
         success: function (data) {
             let toJoin = data.ToJoin ? data.ToJoin : [];

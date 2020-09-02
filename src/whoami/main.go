@@ -122,7 +122,7 @@ func enableCors(w *http.ResponseWriter) {
 	//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	//	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
 
-	//	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, game_id, pass, name, character, user")
 	//	(*w).Header().Set("Content-Type", "application/json")
 }
@@ -142,7 +142,13 @@ func getUUID(request *http.Request) (string, error) {
 			println(err)
 			return "", err
 		}
+
+	} else {
+		if request.Header.Get("id_fix") != "" {
+			UUID = request.Header.Get("id_fix")
+		}
 	}
+
 	return UUID, nil
 }
 
