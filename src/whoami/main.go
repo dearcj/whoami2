@@ -166,14 +166,6 @@ func setSession(uuid string, response http.ResponseWriter) {
 			SameSite: 2,
 		}
 		http.SetCookie(response, cookie)
-
-		cookie = &http.Cookie{
-			Name:     "session",
-			Value:    encoded,
-			Path:     "/",
-			SameSite: 2,
-		}
-		http.SetCookie(response, cookie)
 	}
 }
 
