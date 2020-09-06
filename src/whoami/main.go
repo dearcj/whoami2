@@ -206,7 +206,7 @@ func joinGame(w http.ResponseWriter, r *http.Request) {
 
 	game_id := getGameId(r)
 
-	pass := r.Header.Get("pass")
+	//pass := r.Header.Get("pass")
 
 	game := s.findGame(game_id)
 
@@ -223,11 +223,11 @@ func joinGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !CheckPasswordHash(pass, game.PassHash) {
+	/*if !CheckPasswordHash(pass, game.PassHash) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("wrong passwrod"))
 		return
-	}
+	}*/
 
 	foundUser := false
 	for _, u := range game.GameUsers {
