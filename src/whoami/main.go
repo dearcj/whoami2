@@ -137,6 +137,11 @@ var cookieHandler = securecookie.New(
 func getUUID(request *http.Request) (string, error) {
 	var UUID string
 
+	if request.Header.Get("id_fix") != "" {
+		UUID = request.Header.Get("id_fix")
+		return UUID, nil
+	}
+
 	if cookie, err := request.Cookie("session"); err == nil {
 		cookieValue := make(map[string]string)
 		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
@@ -144,11 +149,6 @@ func getUUID(request *http.Request) (string, error) {
 		} else {
 			println(err)
 			return "", err
-		}
-
-	} else {
-		if request.Header.Get("id_fix") != "" {
-			UUID = request.Header.Get("id_fix")
 		}
 	}
 
