@@ -24,6 +24,7 @@ type GameUser struct {
 	CharacterAssigned string
 	Won               bool
 	Host              bool
+	WonPlace          int
 }
 
 type Game struct {
@@ -116,7 +117,7 @@ func addCorsHeader(res http.ResponseWriter) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
@@ -137,10 +138,10 @@ var cookieHandler = securecookie.New(
 func getUUID(request *http.Request) (string, error) {
 	var UUID string
 
-	if request.Header.Get("id_fix") != "" {
-		UUID = request.Header.Get("id_fix")
-		return UUID, nil
-	}
+//	if request.Header.Get("id_fix") != "" {
+//		UUID = request.Header.Get("id_fix")
+//		return UUID, nil
+//	}
 
 	if cookie, err := request.Cookie("session"); err == nil {
 		cookieValue := make(map[string]string)
@@ -388,6 +389,7 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := g.findUser(userid)
+
 	if u == nil || !u.Host {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -401,6 +403,14 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 	s.M.Lock()
 	utoset := g.findUser(userToSet)
 	utoset.Won = true
+	maxPlace := 0
+	for _, u := range g.GameUsers {
+		if u.WonPlace > maxPlace {
+			maxPlace = u.WonPlace
+		}
+	}
+	utoset.WonPlace = maxPlace + 1
+
 	s.M.Unlock()
 
 	w.WriteHeader(http.StatusOK)
@@ -492,6 +502,40 @@ func roll(users []*GameUser, allNames []string) {
 		copynames = append(copynames[:randInx], copynames[randInx+1:]...)
 	}
 }
+
+func resetGame(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	userid, err := getUUID(r)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	game_id := getGameId(r)
+	g := s.findGame(game_id)
+	u := g.findUser(userid)
+
+
+	if g != nil && u != nil {
+		g.Started = false
+		for _, u := range g.GameUsers {
+			u.CharacterAssigned = ""
+			u.CharacterAdded = ""
+			u.Won = false
+			u.WonPlace = 0
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 
 func finishGame(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
@@ -647,7 +691,7 @@ func main() {
 	http.HandleFunc("/submit_character", submitCharacter)
 	http.HandleFunc("/host_start_game", hostStartGame)
 	http.HandleFunc("/set_win", setWin)
-	http.HandleFunc("/finish_game", finishGame)
+	http.HandleFunc("/finish_game", resetGame)
 
 	http.HandleFunc("/list_games", listGames)
 	http.HandleFunc("/game_info", gameInfo)
