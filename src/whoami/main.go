@@ -117,7 +117,7 @@ func addCorsHeader(res http.ResponseWriter) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
 
 	//	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
@@ -410,7 +410,7 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	utoset.WonPlace = maxPlace + 1
-
+	println("set won place::", utoset.WonPlace)
 	s.M.Unlock()
 
 	w.WriteHeader(http.StatusOK)
