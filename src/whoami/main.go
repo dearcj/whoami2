@@ -402,14 +402,17 @@ func setWin(w http.ResponseWriter, r *http.Request) {
 
 	s.M.Lock()
 	utoset := g.findUser(userToSet)
-	utoset.Won = true
-	maxPlace := 0
-	for _, u := range g.GameUsers {
-		if u.WonPlace > maxPlace {
-			maxPlace = u.WonPlace
+	if !utoset.Won {
+		utoset.Won = true
+		maxPlace := 0
+		for _, u := range g.GameUsers {
+			if u.WonPlace > maxPlace {
+				maxPlace = u.WonPlace
+			}
 		}
+		utoset.WonPlace = maxPlace + 1
+
 	}
-	utoset.WonPlace = maxPlace + 1
 	println("set won place::", utoset.WonPlace)
 	s.M.Unlock()
 
