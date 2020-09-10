@@ -138,8 +138,9 @@ var cookieHandler = securecookie.New(
 func getUUID(request *http.Request) (string, error) {
 	var UUID string
 
-if request.Header.Get("id_fix") != "" {
-	UUID = request.Header.Get("id_fix")
+	println("id_fix set to : ", request.Header.Get("id_fix"))
+	if request.Header.Get("id_fix") != "" {
+		UUID = request.Header.Get("id_fix")
 		return UUID, nil
 	}
 
