@@ -342,17 +342,20 @@ func submitCharacter(w http.ResponseWriter, r *http.Request) {
 
 	g := s.findGame(game_id)
 	if g == nil {
+		log.Print("No such game_id", game_id)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if g.Started {
+		log.Print("Game already started")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	u := g.findUser(userid)
 	if u == nil {
+		log.Print("No such user", userid)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
