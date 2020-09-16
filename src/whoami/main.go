@@ -686,7 +686,7 @@ var s *Settings
 
 func main() {
 
-	port := "8081"
+	port := "80"
 
 	println("Starting server at host", ":"+port)
 
