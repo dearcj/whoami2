@@ -362,7 +362,7 @@ func submitCharacter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.M.Lock()
-	u.Name = r.Header.Get("name")
+	u.Name, _ = url.QueryUnescape( r.Header.Get("name"))
 	u.CharacterAdded, _ = url.QueryUnescape(r.Header.Get("character"))
 	s.M.Unlock()
 
