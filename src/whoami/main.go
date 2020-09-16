@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gofrs/uuid"
 	"math/rand"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -261,7 +262,7 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 
 	var gameId = uuid.Must(uuid.NewV4())
 	pass := r.Header.Get("pass")
-	game_name := r.Header.Get("name")
+	game_name, _ := url.QueryUnescape(r.Header.Get("name"))
 
 	userid, err := getUUID(r)
 	if err != nil {
@@ -362,7 +363,7 @@ func submitCharacter(w http.ResponseWriter, r *http.Request) {
 
 	s.M.Lock()
 	u.Name = r.Header.Get("name")
-	u.CharacterAdded = r.Header.Get("character")
+	u.CharacterAdded, _ = url.QueryUnescape(r.Header.Get("character"))
 	s.M.Unlock()
 
 	w.WriteHeader(http.StatusOK)
