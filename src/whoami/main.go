@@ -3,18 +3,17 @@ package main
 import (
 	"encoding/json"
 	"github.com/gofrs/uuid"
-	"math/rand"
-	"net/url"
-	"strconv"
-	"strings"
-
 	"github.com/gorilla/securecookie"
+	"github.com/teris-io/shortid"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
+	"strconv"
 	"sync"
 )
 
@@ -45,6 +44,7 @@ type User struct {
 type Settings struct {
 	Games []*Game
 	Users []*User
+	TotalGames int
 	M     sync.RWMutex `json:"-"`
 }
 
@@ -284,7 +284,7 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 		game_name = "Game" + strconv.Itoa(len(s.Games)+1)
 	}
 
-	linktoken := strings.ReplaceAll(gameId.String(), "-", "")
+	linktoken, _ := shortId.Generate() //strings.ReplaceAll(gameId.String(), "-", "")
 
 	newgame := &Game{
 		PublicName: game_name,
@@ -293,7 +293,12 @@ func createGame(w http.ResponseWriter, r *http.Request) {
 		PassHash:   hashAndSalt(pass),
 		LinkToken:  linktoken,
 	}
+
+	s.M.Lock()
 	s.Games = append(s.Games, newgame)
+	s.TotalGames++
+	s.M.Unlock()
+
 
 	go func() {
 		err := saveSettings(s)
@@ -683,7 +688,7 @@ func NoCacheWrapper(next http.Handler) http.Handler {
 }
 
 var s *Settings
-
+var shortId *shortid.Shortid
 func main() {
 
 	port := "80"
@@ -705,6 +710,7 @@ func main() {
 	http.HandleFunc("/game_info", gameInfo)
 
 	s = getSettings()
+	shortId, _ = shortid.New(1, shortid.DefaultABC, uint64(s.TotalGames))
 
 	dir, _ = os.Getwd()
 	err := http.ListenAndServe(":"+port, nil)
